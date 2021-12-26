@@ -15,6 +15,7 @@ class MovieDetailView(DetailView):
     model = Movie
     slug_field = 'url'
 
+
 class AddReview(View):
     def post(self, request, pk):
         form = ReviewForms(request.POST)

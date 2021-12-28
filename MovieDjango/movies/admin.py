@@ -133,7 +133,7 @@ class ActorAdmin(admin.ModelAdmin):
 #Класс Рейтинга
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
-    list_display = ('star', 'ip')
+    list_display = ('star', 'movie', 'ip')
 
 #Класс Кадры из Фильма
 @admin.register(MovieShots)

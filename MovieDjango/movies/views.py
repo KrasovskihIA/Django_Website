@@ -2,8 +2,10 @@ from django.shortcuts import redirect, render
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 from .models import *
-from .forms import ReviewForms
+from .forms import ReviewForms, RatingForm
 from django.db.models import Q
+from django.http import HttpResponse
+
 
 
 #Жанры и года выхода фильмов
@@ -24,6 +26,13 @@ class MovieView(GenryYear, ListView):
 class MovieDetailView(GenryYear, DetailView):
     model = Movie
     slug_field = 'url'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['star_form'] = RatingStar()
+        return context
+
+
 
 
 class AddReview(View):
@@ -55,3 +64,26 @@ class FilterMovieView(GenryYear, ListView):
             Q(genres__in=self.request.GET.getlist("genre"))
         )
         return queryset
+
+
+
+class AddStarRating(View):
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+
+    def post(self, request):
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            Rating.objects.update_or_create(
+                ip=self.get_client_ip(request),
+                movie_id=int(request.POST.get("movie")),
+                defaults={'star_id': int(request.POST.get("star"))}
+            )
+            return HttpResponse(status=201)
+        else:
+            return HttpResponse(status=400)

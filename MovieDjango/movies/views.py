@@ -103,9 +103,9 @@ class Search(ListView):
     paginate_by = 3
 
     def get_queryset(self):
-        return Movie.objects.filter(title__icontains=self.request.GET.get('q'))
+        return Movie.objects.filter(title__icontains=self.request.GET.get("q"))
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['q'] = self.request.GET.get('q')
+        context["q"] = f'q={self.request.GET.get("q")}&'
         return context

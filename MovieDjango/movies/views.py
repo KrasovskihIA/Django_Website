@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 from .models import *
-from .forms import ReviewForms, RatingForm
+from .forms import ReviewForms, RatingForm, ReviewForms
 from django.db.models import Q
 from django.http import HttpResponse
 
@@ -31,6 +31,7 @@ class MovieDetailView(GenryYear, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['star_form'] = RatingStar()
+        context['form'] = ReviewForms()
         return context
 
 
